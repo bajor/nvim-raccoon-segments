@@ -153,6 +153,14 @@ h.test("backends build read-only command lines for every preset", function()
   h.equal(backends.final_text(cl, '{"result":"hi","is_error":false}'), "hi")
   h.equal(backends.final_text(cl, "not json"), nil)
   h.equal(backends.final_text(cl, '{"is_error":true,"result":"boom"}'), nil)
+  -- `claude -p --output-format json` emits the whole stream as an array; the
+  -- text lives in the result event, which is not always the last one.
+  h.equal(backends.final_text(cl, '[{"type":"system","subtype":"init"},' ..
+    '{"type":"rate_limit_event"},{"type":"assistant"},' ..
+    '{"type":"result","subtype":"success","is_error":false,"result":"hi"}]'), "hi")
+  h.equal(backends.final_text(cl,
+    '[{"type":"result","subtype":"error","is_error":true,"result":"boom"}]'), nil)
+  h.equal(backends.final_text(cl, '[{"type":"system"},{"type":"assistant"}]'), nil)
   local cx = backends.build("codex", ctx)
   h.equal(cx.cmd[1], "codex")
   h.truthy(vim.tbl_contains(cx.cmd, "read-only"))
