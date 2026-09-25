@@ -321,6 +321,26 @@ with fake `opencode`/`claude`/`codex` CLIs, host-compatibility tests against
 the pinned raccoon commit in both commit viewers, `luacheck`, and
 `git diff --check`.
 
+## Development and releases
+
+Same flow as nvim-raccoon, using the shared workflows from
+[bajor/github-workflows](https://github.com/bajor/github-workflows):
+
+- Changes go to `main` through pull requests. Every PR must touch
+  `CHANGELOG.md` (the **Changelog Check** workflow fails otherwise).
+- **CI** runs on every push and PR to `main`: `luacheck`, and `make test` on
+  Neovim 0.10.4, stable and nightly.
+- **Release** runs when a push to `main` changes `CHANGELOG.md`. It tags
+  `v<version>` from the top `## [version]` heading if that tag does not exist
+  yet, and publishes a GitHub release for `X.Y` / `X.Y.0` versions (patch
+  versions such as `0.1.1` are tagged without a release).
+- **Delete Visual Explanation SVGs** removes `visual-explanations/*.svg` from
+  `main` after a merge. It pushes with the `REMOVE_VISUALS_MAIN` repository
+  secret, a fine-grained PAT with Contents read/write whose owner may bypass
+  the `main` ruleset.
+
+Run `make test` locally before opening a PR.
+
 ## License
 
 MIT

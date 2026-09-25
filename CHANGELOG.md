@@ -21,4 +21,9 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   validation with one repair round, and `:RaccoonSegments` commands for
   status, logs, cancel and prompts.
 - Test suite: pure Lua, embedded-UI Neovim, fake-CLI pipeline and pinned-host
-  compatibility tests; CI on Neovim 0.10.4, stable and nightly.
+  compatibility tests.
+- CI/CD matching nvim-raccoon: luacheck plus `make test` on Neovim 0.10.4,
+  stable and nightly for pushes and PRs to `main`; a changelog check on PRs;
+  a version tag and GitHub release when a merge changes the top
+  `CHANGELOG.md` entry; and cleanup of `visual-explanations/*.svg` after
+  merge (needs the `REMOVE_VISUALS_MAIN` repository secret).
