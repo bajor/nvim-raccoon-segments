@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- `claude` backend: read the final text from the `result` event when
+  `claude -p --output-format json` returns the whole stream as a JSON array.
+  Every claude-backed generation previously failed with "claude JSON has no
+  result field". The single-object form keeps working.
+
 ## [0.1.0] - 2026-09-25
 
 ### Added

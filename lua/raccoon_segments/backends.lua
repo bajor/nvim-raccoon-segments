@@ -130,11 +130,20 @@ function M.final_text(spec, stdout)
     if not ok or type(decoded) ~= "table" then
       return nil, "claude did not return JSON: " .. (text:sub(1, 200):gsub("\n", " "))
     end
-    if decoded.is_error then
-      return nil, "claude reported an error: " .. tostring(decoded.result or decoded.error)
+    -- Either the result object on its own, or the whole stream as an array.
+    local result = decoded
+    if decoded[1] ~= nil then
+      result = nil
+      for _, event in ipairs(decoded) do
+        if type(event) == "table" and event.type == "result" then result = event end
+      end
+      if not result then return nil, "claude JSON has no result event" end
     end
-    if type(decoded.result) ~= "string" then return nil, "claude JSON has no result field" end
-    return decoded.result
+    if result.is_error then
+      return nil, "claude reported an error: " .. tostring(result.result or result.error)
+    end
+    if type(result.result) ~= "string" then return nil, "claude JSON has no result field" end
+    return result.result
   end
   return text
 end
